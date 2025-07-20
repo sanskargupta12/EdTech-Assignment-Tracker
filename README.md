@@ -1,4 +1,4 @@
-# Assignment Tracking System: Technical Report & Design Document
+# Assignment Tracking System
 
 ## 1. Introduction
 
