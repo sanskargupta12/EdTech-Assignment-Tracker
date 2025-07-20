@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --auth-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --background-gradient: linear-gradient(to right top, #f2f4f6, #f8f9fa);
+    --text-dark: #343a40;
+    --text-light: #6c757d;
+    --border-color: #dee2e6;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-radius: 8px;
+    --success-bg: #d4edda;
+    --success-text: #155724;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-image: var(--background-gradient);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center content vertically, perfect for the login page */
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-image 0.5s ease-in-out;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4 {
+    color: var(--text-dark);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+#message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    text-align: center;
+    display: none; /* Hidden by default */
+}
+
+.card {
+    background-color: #fdfdfd;
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+.card button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 30px 0;
+}
+
+/* --- Auth Page Specific Styles --- */
+
+/* When auth section is visible, apply a different background */
+body:has(#auth-section:not([style*="display: none"])) {
+    background-image: var(--auth-background);
+}
+
+/* When dashboards are visible, align content to the top for better layout */
+body:has(#teacher-dashboard:not([style*="display: none"])),
+body:has(#student-dashboard:not([style*="display: none"])) {
+    align-items: flex-start;
+}
+
+/* Glassmorphism effect for the container on the auth page */
+body:has(#auth-section:not([style*="display: none"])) .container {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Adjust text and input colors for the dark auth background */
+body:has(#auth-section:not([style*="display: none"])) h1,
+body:has(#auth-section:not([style*="display: none"])) h2,
+body:has(#auth-section:not([style*="display: none"])) .form-group label {
+    color: #f0f0f0;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+body:has(#auth-section:not([style*="display: none"])) .form-group input,
+body:has(#auth-section:not([style*="display: none"])) .form-group select {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+body:has(#auth-section:not([style*="display: none"])) .form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}

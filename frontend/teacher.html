@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Teacher Dashboard</h1>
+            <div class="auth-buttons">
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="nav-buttons">
+            <button class="secondary-button" onclick="location.href='create_assignment.html'">Create New Assignment</button>
+            <button onclick="location.href='view_teacher_assignments.html'">View My Assignments</button>
+        </div>
+
+        <hr>
+
+        <h2>Welcome, Teacher!</h2>
+        <p>Use the buttons above to manage your assignments and view student submissions.</p>
+
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (getUserRole() !== 'teacher') {
+                alert('Access Denied. Please login as a teacher.');
+                logout(); // Redirect to login
+            }
+        });
+    </script>
+</body>
+</html>

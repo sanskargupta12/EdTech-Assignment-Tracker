@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Assignment</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Submit Assignment: <span id="assignmentTitle"></span></h1>
+            <div class="auth-buttons">
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="form-group">
+            <label for="submissionText">Your Submission Text (Optional):</label>
+            <textarea id="submissionText" placeholder="Type your answer here..."></textarea>
+        </div>
+        <button onclick="handleSubmitAssignment()">Submit Assignment</button>
+        <p id="message" class="message"></p>
+        <div class="nav-buttons">
+            <button class="secondary-button" onclick="location.href='view_all_assignments.html'">Back to All Assignments</button>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        let currentAssignmentId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (getUserRole() !== 'student') {
+                alert('Access Denied. Please login as a student.');
+                logout();
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            currentAssignmentId = urlParams.get('assignmentId');
+
+            if (currentAssignmentId) {
+                // Fetch assignment details to display title
+                const response = await getStudentAssignments();
+                if (response && response.ok) {
+                    const data = await response.json();
+                    const assignment = data.find(a => a.id == currentAssignmentId);
+                    if (assignment) {
+                        document.getElementById('assignmentTitle').innerText = assignment.title;
+                    } else {
+                        document.getElementById('assignmentTitle').innerText = 'Unknown Assignment';
+                        showMessage("Assignment not found or you don't have access.", "error");
+                    }
+                } else {
+                    document.getElementById('assignmentTitle').innerText = 'Error loading title';
+                }
+            } else {
+                showMessage("No assignment ID specified for submission.", "error");
+                document.getElementById('assignmentTitle').innerText = 'Error';
+            }
+        });
+
+        function showMessage(msg, type) {
+            const messageElem = document.getElementById('message');
+            messageElem.innerText = msg;
+            messageElem.className = `message ${type}`;
+            messageElem.style.display = 'block';
+            setTimeout(() => messageElem.style.display = 'none', 3000);
+        }
+
+        async function handleSubmitAssignment() {
+            if (!currentAssignmentId) {
+                showMessage("Cannot submit: No assignment selected.", "error");
+                return;
+            }
+
+            const submissionText = document.getElementById('submissionText').value;
+            // const submissionFile = document.getElementById('submissionFile').files[0]; // For file upload
+
+            // In a real file upload scenario, you'd send FormData, not JSON directly
+            // For now, file_path is just a placeholder string if you want to test that field
+            const payload = {
+                submission_text: submissionText,
+                // file_path: submissionFile ? submissionFile.name : null // Placeholder: if file was uploaded, store its name/path
+            };
+
+            const response = await submitAssignment(currentAssignmentId, submissionText /*, payload.file_path */);
+            const data = await response.json();
+
+            if (response && response.ok) {
+                showMessage(data.message, "success");
+                document.getElementById('submissionText').value = '';
+                // if (document.getElementById('submissionFile')) document.getElementById('submissionFile').value = '';
+                // Optional: Redirect back after successful submission
+                // setTimeout(() => window.location.href = 'view_all_assignments.html', 1500);
+            } else if (data) {
+                showMessage(`Error: ${data.message}`, "error");
+            } else {
+                showMessage("An unknown error occurred.", "error");
+            }
+        }
+    </script>
+</body>
+</html>

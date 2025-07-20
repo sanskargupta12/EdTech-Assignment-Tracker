@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Assignment Tracker</h1>
+        <p class="small-text">Redirecting you...</p>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = getToken();
+            const role = getUserRole();
+
+            if (token && role) {
+                // User is logged in, redirect to their dashboard
+                if (role === 'teacher') {
+                    window.location.href = 'teacher.html';
+                } else if (role === 'student') {
+                    window.location.href = 'student.html';
+                } else {
+                    // Unknown role, log out and redirect to login
+                    logout();
+                }
+            } else {
+                // User is not logged in, redirect to login page
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

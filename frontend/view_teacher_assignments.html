@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assignments</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Created Assignments</h1>
+            <div class="auth-buttons">
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div id="teacherAssignments" class="card-list">Loading assignments...</div>
+        <p id="message" class="message"></p>
+        <div class="nav-buttons">
+            <button class="secondary-button" onclick="location.href='teacher.html'">Back to Dashboard</button>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchTeacherAssignments);
+
+        function showMessage(msg, type) {
+            const messageElem = document.getElementById('message');
+            messageElem.innerText = msg;
+            messageElem.className = `message ${type}`;
+            messageElem.style.display = 'block';
+            setTimeout(() => messageElem.style.display = 'none', 3000);
+        }
+
+        async function fetchTeacherAssignments() {
+            if (getUserRole() !== 'teacher') {
+                alert('Access Denied. Please login as a teacher.');
+                logout();
+                return;
+            }
+
+            const assignmentsDiv = document.getElementById('teacherAssignments');
+            const response = await getTeacherAssignments();
+
+            if (response && response.ok) {
+                const data = await response.json();
+                assignmentsDiv.innerHTML = ''; // Clear loading text
+                if (data.length === 0) {
+                    assignmentsDiv.innerText = "No assignments created yet.";
+                    return;
+                }
+                data.forEach(assignment => {
+                    const assignmentCard = document.createElement('div');
+                    assignmentCard.classList.add('card');
+                    assignmentCard.innerHTML = `
+                        <h3>${assignment.title}</h3>
+                        <p>${assignment.description || 'No description provided'}</p>
+                        <p><strong>Due:</strong> ${assignment.due_date}</p>
+                        <p><strong>Created:</strong> ${new Date(assignment.created_at).toLocaleDateString()}</p>
+                        <button onclick="viewSubmissionsForAssignment(${assignment.id})">View Submissions</button>
+                    `;
+                    assignmentsDiv.appendChild(assignmentCard);
+                });
+            } else {
+                const errorData = response ? await response.json() : { message: 'Network error or no response.' };
+                assignmentsDiv.innerText = `Error: ${errorData.message || 'Could not fetch assignments.'}`;
+                showMessage(`Error: ${errorData.message || 'Failed to load assignments.'}`, "error");
+            }
+        }
+
+        function viewSubmissionsForAssignment(assignmentId) {
+            window.location.href = `view_submissions.html?assignmentId=${assignmentId}`;
+        }
+    </script>
+</body>
+</html>

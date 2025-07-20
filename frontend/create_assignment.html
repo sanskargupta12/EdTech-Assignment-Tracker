@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Assignment</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Create New Assignment</h1>
+            <div class="auth-buttons">
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="form-group">
+            <label for="title">Assignment Title:</label>
+            <input type="text" id="title" placeholder="e.g., Essay on World War II" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description (Optional):</label>
+            <textarea id="description" placeholder="Provide details about the assignment..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="dueDate">Due Date:</label>
+            <input type="date" id="dueDate" required>
+        </div>
+        <button onclick="handleCreateAssignment()">Create Assignment</button>
+        <p id="message" class="message"></p>
+        <div class="nav-buttons">
+            <button class="secondary-button" onclick="location.href='teacher.html'">Back to Dashboard</button>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (getUserRole() !== 'teacher') {
+                alert('Access Denied. Please login as a teacher.');
+                logout();
+            }
+        });
+
+        function showMessage(msg, type) {
+            const messageElem = document.getElementById('message');
+            messageElem.innerText = msg;
+            messageElem.className = `message ${type}`;
+            messageElem.style.display = 'block';
+            setTimeout(() => messageElem.style.display = 'none', 3000);
+        }
+
+        async function handleCreateAssignment() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const dueDate = document.getElementById('dueDate').value;
+
+            if (!title || !dueDate) {
+                showMessage("Assignment title and due date are required.", "error");
+                return;
+            }
+
+            const response = await createAssignment(title, description, dueDate);
+            const data = await response.json();
+
+            if (response && response.ok) {
+                showMessage(data.message, "success");
+                document.getElementById('title').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('dueDate').value = '';
+            } else if (data) {
+                showMessage(`Error: ${data.message}`, "error");
+            } else {
+                showMessage("An unknown error occurred.", "error");
+            }
+        }
+    </script>
+</body>
+</html>

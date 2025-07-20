@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Submissions</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Submissions</h1>
+            <div class="auth-buttons">
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div id="mySubmissionsList" class="card-list">Loading submissions...</div>
+        <p id="message" class="message"></p>
+        <div class="nav-buttons">
+            <button class="secondary-button" onclick="location.href='student.html'">Back to Dashboard</button>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchMySubmissions);
+
+        function showMessage(msg, type) {
+            const messageElem = document.getElementById('message');
+            messageElem.innerText = msg;
+            messageElem.className = `message ${type}`;
+            messageElem.style.display = 'block';
+            setTimeout(() => messageElem.style.display = 'none', 3000);
+        }
+
+        async function fetchMySubmissions() {
+            if (getUserRole() !== 'student') {
+                alert('Access Denied. Please login as a student.');
+                logout();
+                return;
+            }
+
+            const submissionsDiv = document.getElementById('mySubmissionsList');
+            const response = await getMySubmissions();
+
+            if (response && response.ok) {
+                const data = await response.json();
+                submissionsDiv.innerHTML = ''; // Clear loading text
+                if (data.length === 0) {
+                    submissionsDiv.innerText = "You haven't submitted any assignments yet.";
+                    return;
+                }
+                data.forEach(submission => {
+                    const submissionCard = document.createElement('div');
+                    submissionCard.classList.add('card');
+                    submissionCard.innerHTML = `
+                        <h3>Assignment: ${submission.assignment_title}</h3>
+                        <p><strong>Your Submission:</strong> ${submission.submission_text || '<em>No text submission</em>'}</p>
+                        <p>Submitted On: ${new Date(submission.submitted_at).toLocaleString()}</p>
+                        ${submission.file_path ? `<p>File: <a href="${submission.file_path}" target="_blank">Download File</a></p>` : ''}
+                    `;
+                    submissionsDiv.appendChild(submissionCard);
+                });
+            } else {
+                const errorData = response ? await response.json() : { message: 'Network error or no response.' };
+                submissionsDiv.innerText = `Error: ${errorData.message || 'Could not fetch your submissions.'}`;
+                showMessage(`Error: ${errorData.message || 'Failed to load your submissions.'}`, "error");
+            }
+        }
+    </script>
+</body>
+</html>
