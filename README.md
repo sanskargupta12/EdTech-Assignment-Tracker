@@ -1,5 +1,11 @@
 # Assignment Tracking System
 
+## How to Run the Project
+
+Follow these steps to run the project on your local machine:
+
+To run the project, first get the repository onto your desktop. After downloading or cloning, open a terminal and navigate to the backend folder by running `cd backend`. Then start the backend server by running `python app.py`. Once the backend is running, go to the frontend folder and open the `index.html` file in your browser. The frontend will now work and connect to the backend.
+
 ## 1. Introduction
 
 This document outlines the technical design and architecture of the Assignment Tracking System. The system aims to provide a platform for teachers to create and manage assignments, and for students to submit their work, including text and file uploads. It covers the core system components, data model, API specifications, authentication mechanisms, and future scalability considerations.
